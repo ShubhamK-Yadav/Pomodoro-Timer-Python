@@ -10,6 +10,7 @@ class TimerDisplay(ctk.CTkLabel):
         if self.timer.tick():
             print("Timer up!")
         self.configure(text= self.timer.formatted_time())
+
         # Do not pass () with update_timer, only reference passed
         # Telling it what to call essentially instead of calling it right now
         self.after(1000, self.update_timer)

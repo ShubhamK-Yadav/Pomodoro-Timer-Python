@@ -6,9 +6,9 @@ class TimerInput(ctk.CTkFrame):
         super().__init__(parent)
         self.callback_func = callback_func
 
-        self.hours_var = ctk.StringVar(value=00)
-        self.minutes_var = ctk.StringVar(value=00)
-        self.seconds_var = ctk.StringVar(value=00)
+        self.hours_var = ctk.StringVar(value="00")
+        self.minutes_var = ctk.StringVar(value="00")
+        self.seconds_var = ctk.StringVar(value="00")
 
         # Title Label
         title = ctk.CTkLabel(
@@ -46,7 +46,6 @@ class TimerInput(ctk.CTkFrame):
         self.seconds_entry = ctk.CTkEntry(self, textvariable=self.seconds_var, placeholder_text="SS", **entry_kwargs)
         self.seconds_entry.grid(row=2, column=4, padx=(5, 10), pady=5)
 
-        # Start Button
         self.start_button = ctk.CTkButton(
             self,
             command=self.submit,
@@ -57,6 +56,7 @@ class TimerInput(ctk.CTkFrame):
             corner_radius=10
         )
         self.start_button.grid(row=3, column=0, columnspan=5, pady=(20, 10))
+
 
     def submit(self) -> None:
         hours_input = self.hours_entry.get()

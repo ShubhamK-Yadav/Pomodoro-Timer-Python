@@ -8,16 +8,16 @@ class MainApplication(ctk.CTkFrame):
     def __init__(self, parent) -> None:
         super().__init__(parent)
 
-        self.timer_input = timer_input(self, callback_func=self.start_timer)
+        self.timer_input = timer_input(self, callback_func=self.change_state)
         self.timer_input.pack(pady = 20, padx=10)
 
         self.timer_logic = timer_logic()
         self.timer_display = timer_display(self, self.timer_logic)
         self.timer_display.pack(pady=10)
 
-    def start_timer(self, hours: int = 0, minutes: int = 0, seconds: int = 0) -> None:
+    def change_state(self, hours: int = 0, minutes: int = 0, seconds: int = 0) -> None:
         self.timer_logic.set_time(hours=hours, minutes=minutes, seconds=seconds)
-        self.timer_logic.start()
+        self.timer_logic.play_state()
         self.timer_display.update_timer()
         print(f"Starting timer with {hours}h {minutes}m {seconds}s ")
 
