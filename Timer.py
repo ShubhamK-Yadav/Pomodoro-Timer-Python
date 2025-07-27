@@ -23,7 +23,7 @@ class Timer:
         self._completed = True
 
     def tick(self) -> bool:
-        if self._running & self.total_seconds > 0:
+        if self._running and self.total_seconds > 0:
             self.total_seconds -= 1
 
         elif self.total_seconds == 0:
