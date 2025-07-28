@@ -9,11 +9,13 @@ class Timer:
         self._duration = (hours * 3600) + (minutes * 60) + seconds
         self._running = False
 
-    def play_state(self) -> None:
-        if not self._running:
-            self._running = True
-        else:
-            self._running = False
+    def start_timer(self) -> bool:
+        self._running = True
+        return self._running
+
+    def pause_timer(self) -> bool:
+        self._running = False
+        return self._running
 
     def reset(self) -> None:
         self.total_seconds = self._duration
@@ -32,6 +34,9 @@ class Timer:
             return True
 
         return False
+
+    def get_running_state(self) -> bool:
+        return self._running
 
     def get_time(self) -> Tuple[int, int]:
         return divmod(self.total_seconds, 60)

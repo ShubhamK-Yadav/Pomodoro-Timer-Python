@@ -2,9 +2,8 @@
 import customtkinter as ctk
 
 class TimerInput(ctk.CTkFrame):
-    def __init__(self, parent, callback_func=None) -> None:
+    def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.callback_func = callback_func
 
         self.hours_var = ctk.StringVar(value="00")
         self.minutes_var = ctk.StringVar(value="00")
@@ -46,47 +45,6 @@ class TimerInput(ctk.CTkFrame):
         self.seconds_entry = ctk.CTkEntry(self, textvariable=self.seconds_var, placeholder_text="SS", **entry_kwargs)
         self.seconds_entry.grid(row=2, column=4, padx=(5, 10), pady=5)
 
-        self.start_button = ctk.CTkButton(
-            self,
-            command=self.submit,
-            text="Start",
-            height=55,
-            width=160,
-            font=("Segoe UI Semibold", 18),
-            corner_radius=10
-        )
-        self.start_button.grid(row=3, column=0, columnspan=5, pady=(20, 10))
-
-
-    def submit(self) -> None:
-        hours_input = self.hours_entry.get()
-        minutes_input = self.minutes_entry.get()
-        seconds_input = self.seconds_entry.get()
-
-        hours, mins, secs= self.validation(hours=hours_input, mins=minutes_input, secs=seconds_input)
-
-        if (hours, mins, secs) != (0,0,0):
-            self.callback_func(hours, mins, secs)
-        else:
-            return
-
-    def validation(self, hours, mins, secs) -> tuple[int, int, int]:
-        if not (hours.isdigit() and mins.isdigit() and secs.isdigit()):
-            self.error_label.configure(text="Please enter only numbers (0–59) in all fields.")
-            return 0,0,0
-
-        hours = int(hours)
-        mins = int(mins)
-        secs = int(secs)
-
-        if not (0 <= mins <= 59 and 0 <=secs <=59):
-            self.error_label.configure(text="Minutes and seconds must be between 0 and 59.")
-            return 0,0,0
-
-        self.error_label.configure(text="")
-
-        return hours, mins, secs
-    # Validation
     # 1. Time params (for hours, mins and secs)
     # 2. Validating the actual input with helpful messages.
     #
