@@ -1,51 +1,67 @@
-# Make this the input class. Handles taking in input and processing it. How GUI tho?
 import customtkinter as ctk
 
 class TimerInput(ctk.CTkFrame):
     def __init__(self, parent) -> None:
-        super().__init__(parent)
-
+        super().__init__(parent, corner_radius=12, fg_color="#1f2937")
+        # StringVars
         self.hours_var = ctk.StringVar(value="00")
         self.minutes_var = ctk.StringVar(value="00")
         self.seconds_var = ctk.StringVar(value="00")
 
-        # Title Label
+        # Layout config
+        self.grid_columnconfigure((0, 1, 2, 3, 4), weight=1, uniform="col")
+
+        # Title
         title = ctk.CTkLabel(
             self,
             text="Pomodoro Timer",
-            font=("Segoe UI Bold", 28)
+            font=("Segoe UI Bold", 26),
+            anchor="center"
         )
-        title.grid(row=0, column=0, columnspan=5, pady=(0, 20))
+        title.grid(row=0, column=0, columnspan=5, pady=(0, 12), sticky="we")
 
-        # Error label
+        # Error label (managed here but empty initially)
         self.error_label = ctk.CTkLabel(
             self,
             text="",
-            text_color="red",
-            font=("Segoe UI", 14)
+            text_color="#f87171",
+            font=("Segoe UI", 13),
+            anchor="w"
         )
-        self.error_label.grid(row=1, column=0, columnspan=5, pady=(0, 10))
+        self.error_label.grid(row=1, column=0, columnspan=5, sticky="we", pady=(0, 8))
 
-        # Time input fields
+        # Time inputs
+        inputs_frame = ctk.CTkFrame(self, fg_color="transparent")
+        inputs_frame.grid(row=2, column=0, columnspan=5, sticky="we")
+        inputs_frame.grid_columnconfigure((0, 2, 4), weight=1)
+        inputs_frame.grid_columnconfigure((1, 3), weight=0)
+
         time_font = ("Segoe UI", 28)
-        entry_kwargs = {"height": 50, "width": 80, "font": time_font, "corner_radius": 8}
+        entry_kwargs = {
+            "height": 50,
+            "width": 80,
+            "font": time_font,
+            "corner_radius": 8,
+            "justify": "center"
+        }
 
-        self.hours_entry = ctk.CTkEntry(self, textvariable=self.hours_var, placeholder_text="HH", **entry_kwargs)
-        self.hours_entry.grid(row=2, column=0, padx=(10, 5), pady=5)
+        self.hours_entry = ctk.CTkEntry(inputs_frame, textvariable=self.hours_var, placeholder_text="HH", **entry_kwargs)
+        self.hours_entry.grid(row=0, column=0, padx=(0, 4), pady=5, sticky="we")
 
-        colon1 = ctk.CTkLabel(self, text=":", font=time_font)
-        colon1.grid(row=2, column=1, padx=5)
+        colon1 = ctk.CTkLabel(inputs_frame, text=":", font=time_font)
+        colon1.grid(row=0, column=1, padx=2)
 
-        self.minutes_entry = ctk.CTkEntry(self, textvariable=self.minutes_var, placeholder_text="MM", **entry_kwargs)
-        self.minutes_entry.grid(row=2, column=2, padx=5, pady=5)
+        self.minutes_entry = ctk.CTkEntry(inputs_frame, textvariable=self.minutes_var, placeholder_text="MM", **entry_kwargs)
+        self.minutes_entry.grid(row=0, column=2, padx=4, pady=5, sticky="we")
 
-        colon2 = ctk.CTkLabel(self, text=":", font=time_font)
-        colon2.grid(row=2, column=3, padx=5)
+        colon2 = ctk.CTkLabel(inputs_frame, text=":", font=time_font)
+        colon2.grid(row=0, column=3, padx=2)
 
-        self.seconds_entry = ctk.CTkEntry(self, textvariable=self.seconds_var, placeholder_text="SS", **entry_kwargs)
-        self.seconds_entry.grid(row=2, column=4, padx=(5, 10), pady=5)
+        self.seconds_entry = ctk.CTkEntry(inputs_frame, textvariable=self.seconds_var, placeholder_text="SS", **entry_kwargs)
+        self.seconds_entry.grid(row=0, column=4, padx=(4, 0), pady=5, sticky="we")
 
-    # 1. Time params (for hours, mins and secs)
-    # 2. Validating the actual input with helpful messages.
-    #
-    # Passing the validated time to the display_timer
+        # Optional: subtle separator under inputs for visual grounding
+        separator = ctk.CTkFrame(self, height=2, fg_color="#374151")
+        separator.grid(row=3, column=0, columnspan=5, sticky="we", pady=(12, 0))
+
+        self.hours_entry.focus_set()

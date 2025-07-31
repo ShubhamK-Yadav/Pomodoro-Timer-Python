@@ -5,17 +5,23 @@ class TimerDisplay(ctk.CTkLabel):
     def __init__(self, parent, timer_logic):
         self.timer = timer_logic
         super().__init__(parent, text=self.timer.formatted_time(), font=("Comic Sans MS", 36))
-        self.countdown_running = False
+        self._is_running = False
 
     def start_countdown(self) -> None:
-        if not self.countdown_running:
-            self.countdown_running = True
+        if not self._is_running:
+            self._is_running = True
             self.update_timer()
+
+    def get_is_running(self) -> bool:
+        return self._is_running
+
+    def set_is_running(self, state: bool) -> None:
+        self._is_running = state
 
     def update_timer(self) -> None:
         if self.timer.tick():
             print("Timer up!")
-            self.countdown_running = False
+            self._is_running = False
         self.configure(text= self.timer.formatted_time())
         # Do not pass () with update_timer, only reference passed
         # Telling it what to call essentially instead of calling it right now

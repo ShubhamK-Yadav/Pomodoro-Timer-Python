@@ -30,13 +30,16 @@ class Timer:
 
         elif self.total_seconds == 0:
             self._completed = True
-            self.running = False
+            self._running = False
             return True
 
         return False
 
-    def get_running_state(self) -> bool:
+    def get_running(self) -> bool:
         return self._running
+
+    def set_running(self, state: bool) -> None:
+        self._running = state
 
     def get_time(self) -> Tuple[int, int]:
         return divmod(self.total_seconds, 60)
