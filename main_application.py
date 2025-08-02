@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 import customtkinter as ctk
+import notification
 from timer import Timer as timer_logic
 from display_timer import TimerDisplay as timer_display
 from timer_input import TimerInput as timer_gui
 from controls import Controls as controls
+from notification import Notification as notification
 
 class MainApplication(ctk.CTkFrame):
     def __init__(self, parent) -> None:
         super().__init__(parent, corner_radius=12, fg_color="#1f2937")
         self.parent = parent
+        self.notif_title = "Pomodoro Completed!!"
+        self.notif_text="Time for a break!"
 
         # container for padding
         content = ctk.CTkFrame(self, fg_color="transparent")
@@ -16,8 +20,12 @@ class MainApplication(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         content.grid_columnconfigure(0, weight=1)
 
-        # Timer logic / display / input
-        self.timer_logic = timer_logic()
+        # Timer logic / display / input / notification
+        self.notification = notification(title=self.notif_title,
+                                         text=self.notif_text,
+                                         desktop_notif=True,
+                                         play_sound=True)
+        self.timer_logic = timer_logic(notification=self.notification)
         self.timer_gui = timer_gui(content)
         self.timer_display = timer_display(content, self.timer_logic)
         self.button_controls = controls(

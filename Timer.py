@@ -3,11 +3,15 @@ import time as time
 import datetime
 from typing import Tuple
 
+from notification import Notification
+
 class Timer:
-    def __init__(self, hours: int = 0, minutes: int = 0, seconds: int = 0):
+    def __init__(self, hours: int = 0, minutes: int = 0, seconds: int = 0, notification= None):
         self.total_seconds = (hours * 3600) + (minutes * 60) + seconds
         self._duration = (hours * 3600) + (minutes * 60) + seconds
         self._running = False
+        self.notification = notification
+        self.notify = False
 
     def start_timer(self) -> bool:
         self._running = True
@@ -21,18 +25,20 @@ class Timer:
         self.total_seconds = self._duration
         self._running = False
 
-    def done(self) -> None:
+    def finished(self) -> None:
         self._completed = True
+        self._running = False
+        if not self.notify:
+            self.notification.notify()
+            self.notify = True
 
     def tick(self) -> bool:
         if self._running and self.total_seconds > 0:
             self.total_seconds -= 1
-
+            self.notify = False
         elif self.total_seconds == 0:
-            self._completed = True
-            self._running = False
+            self.finished()
             return True
-
         return False
 
     def get_running(self) -> bool:
