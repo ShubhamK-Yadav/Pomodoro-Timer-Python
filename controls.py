@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from image_loader import Image_Loader as image_loader
 
 class Controls(ctk.CTkFrame):
     def __init__(self, parent,  timer_logic=None, input_gui=None, timer_display= None) -> None:
@@ -9,6 +10,10 @@ class Controls(ctk.CTkFrame):
         self.start_button_text = self._current_start_pause_text()
         self.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1, uniform="col")
 
+        loader = image_loader()
+        self.ctk_play_btn1, self.ctk_play_btn2 = loader.load_image("./assets/play_button.png")
+        self.ctk_pause_btn1, self.ctk_pause_btn2 = loader.load_image("./assets/pause_button.png")
+
         btn_frame = ctk.CTkFrame(self, fg_color="transparent")
         btn_frame.grid(row=0, column=0, columnspan=6, sticky="we")
         btn_frame.grid_columnconfigure((0, 1), weight=1, uniform="btn")
@@ -16,13 +21,13 @@ class Controls(ctk.CTkFrame):
         # Start/Pause Button
         self.start_button = ctk.CTkButton(
             btn_frame,
+            image=self.ctk_play_btn1,
+            text="",
             command=self.on_start_pause,
-            text=self.start_button_text,
-            height=55,
-            font=("Segoe UI Semibold", 17),
-            corner_radius=10,
-            fg_color="#2563eb",
-            hover_color="#1d4ed8"
+            fg_color="transparent",
+            width=128,
+            height=128,
+            hover=False
         )
         self.start_button.grid(row=0, column=0, padx=(0, 8), sticky="we")
 
@@ -38,6 +43,28 @@ class Controls(ctk.CTkFrame):
             hover_color="#4b5563"
         )
         self.reset_button.grid(row=0, column=1, padx=(8, 0), sticky="we")
+
+        self.start_button.bind("<Enter>", lambda e: self._hover_start_button())
+        self.start_button.bind("<Leave>", lambda e: self._leave_start_button())
+
+    def _leave_start_button(self):
+        if self._current_start_pause_text() == "Start":
+            self.start_button.configure(image=self.ctk_play_btn1)
+        elif self._current_start_pause_text() == "Pause":
+            self.start_button.configure(image=self.ctk_pause_btn1)
+
+
+    def _hover_start_button(self):
+        if self._current_start_pause_text() == "Start":
+            self.start_button.configure(image=self.ctk_play_btn2)
+        elif self._current_start_pause_text() == "Pause":
+            self.start_button.configure(image=self.ctk_pause_btn2)
+
+    def _set_image_play(self) -> None:
+        if self._current_start_pause_text() == "Start":
+            self.start_button.configure(image=self.ctk_play_btn1)
+        else:
+            self.start_button.configure(image=self.ctk_pause_btn1)
 
     def _current_start_pause_text(self) -> str:
         return "Pause" if self.timer_logic.get_running() else "Start"
@@ -76,7 +103,8 @@ class Controls(ctk.CTkFrame):
             return
 
         self.timer_logic.reset()
-        self.start_button.configure(text=self._current_start_pause_text())
+        self.start_button.configure(image=self._set_image_play())
+
         if self.timer_display:
             self.after(0, self.timer_display.start_countdown)
 
@@ -94,6 +122,6 @@ class Controls(ctk.CTkFrame):
         else:
             self.timer_logic.pause_timer()
 
-        self.start_button.configure(text=self._current_start_pause_text())
+        self.start_button.configure(image=self._set_image_play())
         if self.timer_display:
             self.after(0, self.timer_display.start_countdown)
