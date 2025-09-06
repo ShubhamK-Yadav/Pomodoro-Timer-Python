@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+from PIL import Image
 import customtkinter as ctk
-import notification
+
 from timer import Timer as timer_logic
 from display_timer import TimerDisplay as timer_display
 from timer_input import TimerInput as timer_gui
@@ -9,43 +10,61 @@ from notification import Notification as notification
 
 class MainApplication(ctk.CTkFrame):
     def __init__(self, parent) -> None:
-        super().__init__(parent, corner_radius=12, fg_color="#1f2937")
+        super().__init__(parent, fg_color="transparent", corner_radius=12)
         self.parent = parent
         self.notif_title = "Pomodoro Completed!!"
-        self.notif_text="Time for a break!"
+        self.notif_text = "Time for a break!"
 
-        # container for padding
-        content = ctk.CTkFrame(self, fg_color="transparent")
-        content.grid(row=0, column=0, sticky="nsew", padx=24, pady=24)
-        self.grid_columnconfigure(0, weight=1)
-        content.grid_columnconfigure(0, weight=1)
+        # --- Background Image ---
+        bg_image = ctk.CTkImage(
+            light_image=Image.open("./assets/Background.png"),
+            dark_image=Image.open("./assets/Background.png"),
+            size=(640, 540)
+        )
 
-        # Timer logic / display / input / notification
-        self.notification = notification(title=self.notif_title,
-                                         text=self.notif_text,
-                                         desktop_notif=True,
-                                         play_sound=True)
+        bg_label = ctk.CTkLabel(parent, image=bg_image, text="", fg_color="transparent")
+        bg_label.place(relx=0.5, rely=0.5, anchor="center")
+
+        # --- Container for widgets ---
+        container = ctk.CTkFrame(parent, fg_color="transparent")
+        container.place(relx=0.5, rely=0.5, anchor="center")
+
+        # --- Timer Notification ---
+        self.notification = notification(
+            title=self.notif_title,
+            text=self.notif_text,
+            desktop_notif=True,
+            play_sound=True
+        )
+
+        # --- Timer Logic ---
         self.timer_logic = timer_logic(notification=self.notification)
-        self.timer_gui = timer_gui(content)
-        self.timer_display = timer_display(content, self.timer_logic)
+
+        # --- Timer Input GUI ---
+        self.timer_gui = timer_gui(container)
+
+        # --- Timer Display ---
+        self.timer_display = timer_display(container, self.timer_logic)
+
+        # --- Controls ---
         self.button_controls = controls(
-            content,
+            container,
             input_gui=self.timer_gui,
             timer_logic=self.timer_logic,
             timer_display=self.timer_display
         )
 
-        # Layout using grid for fine control
-        self.timer_gui.grid(row=0, column=0, sticky="ew", pady=(0, 12))
-        self.timer_display.grid(row=1, column=0, sticky="ew", pady=(0, 12))
-        self.button_controls.grid(row=2, column=0, sticky="ew")
+        # --- Pack widgets inside container ---
+        self.timer_gui.pack(pady=(10, 5))
+        self.timer_display.pack(pady=(5, 5))
+        self.button_controls.pack(pady=(5, 10))
 
-        # Keyboard shortcuts
+        # --- Keyboard shortcuts ---
         parent.bind("<space>", lambda e: self.button_controls.on_start_pause())
         parent.bind("r", lambda e: self.button_controls.on_reset())
         parent.bind("<Return>", lambda e: self.button_controls.on_start_pause())
 
-        # Focus initial input
+        # --- Focus initial input ---
         self.timer_gui.hours_entry.focus_set()
 
 def center_window(win, width=600, height=500):
@@ -67,5 +86,4 @@ if __name__ == "__main__":
     center_window(root, 640, 540)
 
     app = MainApplication(root)
-    app.pack(expand=True, fill="both")
     root.mainloop()

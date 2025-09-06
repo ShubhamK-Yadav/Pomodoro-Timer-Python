@@ -2,7 +2,7 @@ import customtkinter as ctk
 
 class TimerInput(ctk.CTkFrame):
     def __init__(self, parent) -> None:
-        super().__init__(parent, corner_radius=12, fg_color="#1f2937")
+        super().__init__(parent, corner_radius=12, fg_color="transparent")
         # StringVars
         self.hours_var = ctk.StringVar(value="00")
         self.minutes_var = ctk.StringVar(value="00")
@@ -45,23 +45,36 @@ class TimerInput(ctk.CTkFrame):
             "justify": "center"
         }
 
-        self.hours_entry = ctk.CTkEntry(inputs_frame, textvariable=self.hours_var, placeholder_text="HH", **entry_kwargs)
+        self.hours_entry = ctk.CTkEntry(
+            inputs_frame,
+            textvariable=self.hours_var,
+            placeholder_text="HH",
+            fg_color="transparent",
+            **entry_kwargs
+        )
         self.hours_entry.grid(row=0, column=0, padx=(0, 4), pady=5, sticky="we")
 
         colon1 = ctk.CTkLabel(inputs_frame, text=":", font=time_font)
         colon1.grid(row=0, column=1, padx=2)
 
-        self.minutes_entry = ctk.CTkEntry(inputs_frame, textvariable=self.minutes_var, placeholder_text="MM", **entry_kwargs)
+        self.minutes_entry = ctk.CTkEntry(
+            inputs_frame,
+            textvariable=self.minutes_var,
+            placeholder_text="MM",
+            fg_color="transparent",
+            **entry_kwargs
+        )
         self.minutes_entry.grid(row=0, column=2, padx=4, pady=5, sticky="we")
 
         colon2 = ctk.CTkLabel(inputs_frame, text=":", font=time_font)
         colon2.grid(row=0, column=3, padx=2)
 
-        self.seconds_entry = ctk.CTkEntry(inputs_frame, textvariable=self.seconds_var, placeholder_text="SS", **entry_kwargs)
+        self.seconds_entry = ctk.CTkEntry(
+            inputs_frame,
+            textvariable=self.seconds_var,
+            placeholder_text="SS",
+            fg_color="transparent",
+            **entry_kwargs)
         self.seconds_entry.grid(row=0, column=4, padx=(4, 0), pady=5, sticky="we")
-
-        # Optional: subtle separator under inputs for visual grounding
-        separator = ctk.CTkFrame(self, height=2, fg_color="#374151")
-        separator.grid(row=3, column=0, columnspan=5, sticky="we", pady=(12, 0))
 
         self.hours_entry.focus_set()

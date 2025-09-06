@@ -4,7 +4,12 @@ import customtkinter as ctk
 class TimerDisplay(ctk.CTkLabel):
     def __init__(self, parent, timer_logic):
         self.timer = timer_logic
-        super().__init__(parent, text=self.timer.formatted_time(), font=("Comic Sans MS", 36))
+        super().__init__(
+            parent,
+            text=self.timer.formatted_time(),
+            font=("Comic Sans MS", 36),
+            fg_color="transparent"
+        )
         self._is_running = False
 
     def start_countdown(self) -> None:

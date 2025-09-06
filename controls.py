@@ -3,16 +3,18 @@ from image_loader import Image_Loader as image_loader
 
 class Controls(ctk.CTkFrame):
     def __init__(self, parent,  timer_logic=None, input_gui=None, timer_display= None) -> None:
-        super().__init__(parent, corner_radius=12, fg_color="#1f2937")
+        super().__init__(parent, corner_radius=12, fg_color="transparent")
         self.timer_logic = timer_logic
         self.input_gui = input_gui
         self.timer_display = timer_display
         self.start_button_text = self._current_start_pause_text()
-        self.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1, uniform="col")
 
         loader = image_loader()
         self.ctk_play_btn1, self.ctk_play_btn2 = loader.load_image("./assets/play_button.png")
         self.ctk_pause_btn1, self.ctk_pause_btn2 = loader.load_image("./assets/pause_button.png")
+        self.ctk_reset_btn1, self.ctk_reset_btn2 = loader.load_image("./assets/Reset_button.png")
+
+        self.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1, uniform="col")
 
         btn_frame = ctk.CTkFrame(self, fg_color="transparent")
         btn_frame.grid(row=0, column=0, columnspan=6, sticky="we")
@@ -29,38 +31,46 @@ class Controls(ctk.CTkFrame):
             height=128,
             hover=False
         )
+        self.start_button.bind("<Enter>", lambda e: self._handle_start_button_enter())
+        self.start_button.bind("<Leave>", lambda e: self._handle_start_button_leave())
+
         self.start_button.grid(row=0, column=0, padx=(0, 8), sticky="we")
 
         # Reset Button
         self.reset_button = ctk.CTkButton(
             btn_frame,
+            image=self.ctk_reset_btn1,
             command=self.on_reset,
-            text="Reset",
-            height=55,
-            font=("Segoe UI Semibold", 17),
-            corner_radius=10,
-            fg_color="#374151",
-            hover_color="#4b5563"
+            text="",
+            fg_color="transparent",
+            width=128,
+            height=128,
+            hover=False
         )
+        self.reset_button.bind("<Enter>", lambda e: self._handle_reset_button_enter())
+        self.reset_button.bind("<Leave>", lambda e: self._handle_reset_button_leave())
+
         self.reset_button.grid(row=0, column=1, padx=(8, 0), sticky="we")
 
-        self.start_button.bind("<Enter>", lambda e: self._hover_start_button())
-        self.start_button.bind("<Leave>", lambda e: self._leave_start_button())
-
-    def _leave_start_button(self):
-        if self._current_start_pause_text() == "Start":
-            self.start_button.configure(image=self.ctk_play_btn1)
-        elif self._current_start_pause_text() == "Pause":
-            self.start_button.configure(image=self.ctk_pause_btn1)
-
-
-    def _hover_start_button(self):
+    def _handle_start_button_enter(self) -> None:
         if self._current_start_pause_text() == "Start":
             self.start_button.configure(image=self.ctk_play_btn2)
         elif self._current_start_pause_text() == "Pause":
             self.start_button.configure(image=self.ctk_pause_btn2)
 
-    def _set_image_play(self) -> None:
+    def _handle_start_button_leave(self) -> None:
+        if self._current_start_pause_text() == "Start":
+            self.start_button.configure(image=self.ctk_play_btn1)
+        elif self._current_start_pause_text() == "Pause":
+            self.start_button.configure(image=self.ctk_pause_btn1)
+
+    def _handle_reset_button_enter(self) -> None:
+        self.reset_button.configure(image=self.ctk_reset_btn2)
+
+    def _handle_reset_button_leave(self) -> None:
+        self.reset_button.configure(image=self.ctk_reset_btn1)
+
+    def _set_image_play_button(self) -> None:
         if self._current_start_pause_text() == "Start":
             self.start_button.configure(image=self.ctk_play_btn1)
         else:
@@ -96,18 +106,6 @@ class Controls(ctk.CTkFrame):
                                                        seconds=seconds_input)
         return hours, minutes, seconds
 
-    def on_reset(self) -> None:
-        hours, minutes, seconds = self.handle_input()
-
-        if (hours, minutes, seconds) == (0, 0, 0) and self.timer_logic.total_seconds == 0:
-            return
-
-        self.timer_logic.reset()
-        self.start_button.configure(image=self._set_image_play())
-
-        if self.timer_display:
-            self.after(0, self.timer_display.start_countdown)
-
     def on_start_pause(self) -> None:
         hours, minutes, seconds = self.handle_input()
 
@@ -122,6 +120,18 @@ class Controls(ctk.CTkFrame):
         else:
             self.timer_logic.pause_timer()
 
-        self.start_button.configure(image=self._set_image_play())
+        self.start_button.configure(image=self._set_image_play_button())
+        if self.timer_display:
+            self.after(0, self.timer_display.start_countdown)
+
+    def on_reset(self) -> None:
+        hours, minutes, seconds = self.handle_input()
+
+        if (hours, minutes, seconds) == (0, 0, 0) and self.timer_logic.total_seconds == 0:
+            return
+
+        self.timer_logic.reset()
+        self.start_button.configure(image=self._set_image_play_button())
+
         if self.timer_display:
             self.after(0, self.timer_display.start_countdown)
