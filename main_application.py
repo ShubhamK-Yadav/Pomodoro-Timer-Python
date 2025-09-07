@@ -38,7 +38,7 @@ class MainApplication(ctk.CTkFrame):
 
         background_cont = ctk.CTkFrame(
             parent,
-            fg_color="#0d3618",  # darker than main container
+            fg_color="#2a3d2f",  # darker than main container
             width=shadow_width,
             height=shadow_height
         )
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
     root = ctk.CTk()
     root.title("Pomodoro App")
-    root.configure(fg_color="#0d3618", corner_radius=20)
+    root.configure(fg_color="#2a3d2f", corner_radius=20)
     center_window(root, 640, 540)
 
     app = MainApplication(root)
