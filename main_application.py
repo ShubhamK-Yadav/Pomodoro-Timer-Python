@@ -11,7 +11,7 @@ from notification import Notification as notification
 
 class MainApplication(ctk.CTkFrame):
     def __init__(self, parent) -> None:
-        super().__init__(parent, fg_color="#6e9945")
+        super().__init__(parent, fg_color="transparent")
         self.parent = parent
         self.notif_title = "Pomodoro Completed!!"
         self.notif_text = "Time for a break!"
@@ -29,9 +29,40 @@ class MainApplication(ctk.CTkFrame):
         bg_label = ctk.CTkLabel(parent, image=bg_image, text="")
         bg_label.place(relx=0.5, rely=0.5, anchor="center")
 
-        # --- Container for widgets ---
-        container = ctk.CTkFrame(parent, fg_color="#6e9945", corner_radius=0)
-        container.place(relx=0.5, rely=0.5, anchor="center")
+        # --- Background Container Shadow ---
+        # Slightly larger, darker, and offset behind the main container
+        shadow_offset_x = 15
+        shadow_offset_y = 10
+        shadow_width = 320# adjust based on your container size
+        shadow_height = 370# adjust based on your container size
+
+        background_cont = ctk.CTkFrame(
+            parent,
+            fg_color="#0d3618",  # darker than main container
+            width=shadow_width,
+            height=shadow_height
+        )
+
+        background_cont.place(
+            relx=0.5, rely=0.5,
+            x=shadow_offset_x, y=shadow_offset_y,  # offset for shadow
+            anchor="center",
+        )
+
+        # --- Main Container ---
+        container = ctk.CTkFrame(
+            parent,
+            fg_color="#6e9945",
+            corner_radius=0,
+            width=shadow_width,
+            height=shadow_height
+        )
+
+        container.place(
+            relx=0.5,
+            rely=0.5,
+            anchor="center",
+        )
 
         # --- Timer Notification ---
         self.notification = notification(
@@ -86,7 +117,9 @@ if __name__ == "__main__":
 
     root = ctk.CTk()
     root.title("Pomodoro App")
+    root.configure(fg_color="#0d3618", corner_radius=20)
     center_window(root, 640, 540)
 
     app = MainApplication(root)
+    app.pack(expand=True, fill="both")
     root.mainloop()
