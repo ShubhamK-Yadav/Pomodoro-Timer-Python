@@ -10,9 +10,9 @@ class Controls(ctk.CTkFrame):
         self.start_button_text = self._current_start_pause_text()
 
         loader = image_loader()
-        self.ctk_play_btn1, self.ctk_play_btn2 = loader.load_image("./assets/play_button.png")
-        self.ctk_pause_btn1, self.ctk_pause_btn2 = loader.load_image("./assets/pause_button.png")
-        self.ctk_reset_btn1, self.ctk_reset_btn2 = loader.load_image("./assets/Reset_button.png")
+        self.ctk_play_btn1, self.ctk_play_btn2 = loader.load_image("./assets/images/play_button.png")
+        self.ctk_pause_btn1, self.ctk_pause_btn2 = loader.load_image("./assets/images/pause_button.png")
+        self.ctk_reset_btn1, self.ctk_reset_btn2 = loader.load_image("./assets/images/Reset_button.png")
 
         self.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1, uniform="col")
 

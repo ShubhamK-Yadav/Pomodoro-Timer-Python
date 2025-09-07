@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from PIL import Image
 import customtkinter as ctk
+import tkextrafont as custom_font
 
 from timer import Timer as timer_logic
 from display_timer import TimerDisplay as timer_display
@@ -10,23 +11,26 @@ from notification import Notification as notification
 
 class MainApplication(ctk.CTkFrame):
     def __init__(self, parent) -> None:
-        super().__init__(parent, fg_color="transparent", corner_radius=12)
+        super().__init__(parent, fg_color="#6e9945")
         self.parent = parent
         self.notif_title = "Pomodoro Completed!!"
         self.notif_text = "Time for a break!"
 
+        # --- Font ---
+        my_font = custom_font.Font(file="./assets/fonts/BoldPixels.ttf", family="BoldPixels")
+
         # --- Background Image ---
         bg_image = ctk.CTkImage(
-            light_image=Image.open("./assets/Background.png"),
-            dark_image=Image.open("./assets/Background.png"),
+            light_image=Image.open("./assets/images/Background.png"),
+            dark_image=Image.open("./assets/images/Background.png"),
             size=(640, 540)
         )
 
-        bg_label = ctk.CTkLabel(parent, image=bg_image, text="", fg_color="transparent")
+        bg_label = ctk.CTkLabel(parent, image=bg_image, text="")
         bg_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # --- Container for widgets ---
-        container = ctk.CTkFrame(parent, fg_color="transparent")
+        container = ctk.CTkFrame(parent, fg_color="#6e9945", corner_radius=0)
         container.place(relx=0.5, rely=0.5, anchor="center")
 
         # --- Timer Notification ---
@@ -41,10 +45,10 @@ class MainApplication(ctk.CTkFrame):
         self.timer_logic = timer_logic(notification=self.notification)
 
         # --- Timer Input GUI ---
-        self.timer_gui = timer_gui(container)
+        self.timer_gui = timer_gui(container, font_prop="BoldPixels")
 
         # --- Timer Display ---
-        self.timer_display = timer_display(container, self.timer_logic)
+        self.timer_display = timer_display(container, self.timer_logic, font_prop="BoldPixels")
 
         # --- Controls ---
         self.button_controls = controls(
@@ -55,9 +59,9 @@ class MainApplication(ctk.CTkFrame):
         )
 
         # --- Pack widgets inside container ---
-        self.timer_gui.pack(pady=(10, 5))
-        self.timer_display.pack(pady=(5, 5))
-        self.button_controls.pack(pady=(5, 10))
+        self.timer_gui.pack(pady=(10, 5), padx=5)
+        self.timer_display.pack(pady=(5, 5), padx=5)
+        self.button_controls.pack(pady=(5, 10), padx=5)
 
         # --- Keyboard shortcuts ---
         parent.bind("<space>", lambda e: self.button_controls.on_start_pause())
@@ -79,7 +83,6 @@ def center_window(win, width=600, height=500):
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")
-    ctk.set_default_color_theme("dark-blue")
 
     root = ctk.CTk()
     root.title("Pomodoro App")

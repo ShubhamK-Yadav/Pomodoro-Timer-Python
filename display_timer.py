@@ -2,12 +2,12 @@
 import customtkinter as ctk
 
 class TimerDisplay(ctk.CTkLabel):
-    def __init__(self, parent, timer_logic):
+    def __init__(self, parent, timer_logic, font_prop: str):
         self.timer = timer_logic
         super().__init__(
             parent,
             text=self.timer.formatted_time(),
-            font=("Comic Sans MS", 36),
+            font=(font_prop, 48),
             fg_color="transparent"
         )
         self._is_running = False
